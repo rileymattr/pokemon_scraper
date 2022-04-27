@@ -106,9 +106,9 @@ def out_json(data: list, file: str):
 if __name__ == '__main__':
 	args = parser.parse_args()
 	if args.name != None:
-		data = list(scrape_single_pokemon_name(name=args.name))
+		data = [scrape_single_pokemon_name(name=args.name)]
 	if args.num != None:
-		data = list(scrape_single_pokemon_num(num=args.num))
+		data = [scrape_single_pokemon_num(num=args.num)]
 	if args.file != None:
 		data = scrape_pokemon_file(args.file)
 	if args.out_csv != None:
