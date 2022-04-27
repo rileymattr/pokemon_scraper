@@ -5,13 +5,17 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--name', help='Name of a single pokemon to retrieve information on.')
+parser.add_argument('--num', help='The national dex number of a single pokemont to retrieve information on.')
 
-def scrape_single_pokemon(name: str) -> dict:
+
+def scrape_single_pokemon_name(name: str) -> dict:
 	data = dict()
+	evs = create_ev_dict()
+	
 	url = 'https://pokemondb.net/pokedex/{}'.format(name)
 	page = requests.get(url)
 	soup = BeautifulSoup(page.content, 'html.parser')
-	data['name'] = name
+	data['name'] = name.lower()
 
 	tables = soup.find_all(class_="vitals-table")
 	rows = list()
@@ -32,7 +36,7 @@ def scrape_single_pokemon(name: str) -> dict:
 	for row in tables[1].find_all('tr'):
 		ev_data = row.find('td').text.lower().strip().replace(' ','').split(',')
 		break
-	evs = create_ev_dict()
+	
 	for ev in ev_data:
 		value = ev[0]
 		key = ev[1:]
@@ -40,6 +44,13 @@ def scrape_single_pokemon(name: str) -> dict:
 	data['evs'] = evs
 	print(data)
 
+
+def scrape_single_pokemon_num(num: str) -> dict:
+	url = 'https://pokemondb.net/pokedex/{}'.format(num)
+	page = requests.get(url)
+	soup = BeautifulSoup(page.content, 'html.parser')
+	name = soup.find('h1').text.strip()
+	return scrape_single_pokemon_name(name)
 
 def create_ev_dict() -> dict:
 	ev = dict()
@@ -54,5 +65,8 @@ def create_ev_dict() -> dict:
 
 if __name__ == '__main__':
 	args = parser.parse_args()
-	scrape_single_pokemon(name=args.name)
+	if args.name != None:
+		scrape_single_pokemon_name(name=args.name)
+	if args.num != None:
+		scrape_single_pokemon_num(num=args.num)
 
