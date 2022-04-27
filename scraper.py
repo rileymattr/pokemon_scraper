@@ -5,8 +5,8 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--name', help='Name of a single pokemon to retrieve information on.')
-parser.add_argument('--num', help='The national dex number of a single pokemont to retrieve information on.')
-
+parser.add_argument('--num',  help='The national dex number of a single pokemont to retrieve information on.')
+parser.add_argument('--file', help='Path to a file containing the names/numbers of pokemon to scrape info on. One pokemon per line.')
 
 def scrape_single_pokemon_name(name: str) -> dict:
 	data = dict()
@@ -31,7 +31,7 @@ def scrape_single_pokemon_name(name: str) -> dict:
 			if len(types) > 1:
 				data['type_2'] = types[1]
 			else:
-				data['type_2'] = 'None'
+				data['type_2'] = 'none'
 	
 	for row in tables[1].find_all('tr'):
 		ev_data = row.find('td').text.lower().strip().replace(' ','').split(',')
@@ -42,7 +42,7 @@ def scrape_single_pokemon_name(name: str) -> dict:
 		key = ev[1:]
 		evs[key] = value
 	data['evs'] = evs
-	print(data)
+	return data
 
 
 def scrape_single_pokemon_num(num: str) -> dict:
@@ -51,6 +51,21 @@ def scrape_single_pokemon_num(num: str) -> dict:
 	soup = BeautifulSoup(page.content, 'html.parser')
 	name = soup.find('h1').text.strip()
 	return scrape_single_pokemon_name(name)
+
+
+def scrape_pokemon_file(file: str) -> list:
+	pokemon_data = list()
+	with open(file, 'r') as f:
+		pokemon = f.readlines()
+	for line in pokemon:
+		if line[0].isdigit():
+			pokemon_data.append(scrape_single_pokemon_num(line.strip()))
+		else:
+			pokemon_data.append(scrape_single_pokemon_name(line.strip()))
+	print(pokemon_data)
+	return pokemon_data
+
+
 
 def create_ev_dict() -> dict:
 	ev = dict()
@@ -69,4 +84,6 @@ if __name__ == '__main__':
 		scrape_single_pokemon_name(name=args.name)
 	if args.num != None:
 		scrape_single_pokemon_num(num=args.num)
+	if args.file != None:
+		scrape_pokemon_file(args.file)
 
