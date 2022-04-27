@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-
+import json
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -8,6 +8,7 @@ parser.add_argument('--name', help='Name of a single pokemon to retrieve informa
 parser.add_argument('--num',  help='The national dex number of a single pokemont to retrieve information on.')
 parser.add_argument('--file', help='Path to a file containing the names/numbers of pokemon to scrape info on. One pokemon per line.')
 parser.add_argument('--out_csv', help='Path to output data in csv format.')
+parser.add_argument('--out_json', help='Path to output data in json format.')
 
 
 def scrape_single_pokemon_name(name: str) -> dict:
@@ -96,6 +97,11 @@ def out_csv(data: list, file: str):
 			f.write(data_str)
 
 
+def out_json(data: list, file: str):
+	with open(file, 'w') as f:
+		json.dump({'data': data}, f)
+
+
 if __name__ == '__main__':
 	args = parser.parse_args()
 	if args.name != None:
@@ -106,3 +112,5 @@ if __name__ == '__main__':
 		data = scrape_pokemon_file(args.file)
 	if args.out_csv != None:
 		out_csv(data=data, file=args.out_csv)
+	if args.out_json != None:
+		out_json(data=data, file=args.out_json)
