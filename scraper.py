@@ -9,6 +9,7 @@ parser.add_argument('--num',  help='The national dex number of a single pokemont
 parser.add_argument('--file', help='Path to a file containing the names/numbers of pokemon to scrape info on. One pokemon per line.')
 parser.add_argument('--out_csv', help='Path to output data in csv format.')
 parser.add_argument('--out_json', help='Path to output data in json format.')
+parser.add_argument('--print', action='store_true', help='Use this flag to print the output to the command line.')
 
 
 def scrape_single_pokemon_name(name: str) -> dict:
@@ -114,3 +115,6 @@ if __name__ == '__main__':
 		out_csv(data=data, file=args.out_csv)
 	if args.out_json != None:
 		out_json(data=data, file=args.out_json)
+	if args.print:
+		for line in data:
+			print(line)
