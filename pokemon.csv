@@ -1,0 +1,8 @@
+Name, Dex Number, Type 1, Type 2, HP, Attack, Defense, Special Attack, Special Defense, Speed
+bulbasaur, 001, grass, poison, 0, 0, 0, 1, 0, 0
+charizard, 006, fire, flying, 0, 0, 0, 3, 0, 0
+turtwig, 387, grass, none, 0, 1, 0, 0, 0, 0
+gyarados, 130, water, flying, 0, 2, 0, 0, 0, 0
+bonsly, 438, rock, none, 0, 0, 1, 0, 0, 0
+cufant, 878, steel, none, 0, 1, 0, 0, 0, 0
+ampharos, 181, electric, none, 0, 0, 0, 3, 0, 0

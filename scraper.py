@@ -7,6 +7,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--name', help='Name of a single pokemon to retrieve information on.')
 parser.add_argument('--num',  help='The national dex number of a single pokemont to retrieve information on.')
 parser.add_argument('--file', help='Path to a file containing the names/numbers of pokemon to scrape info on. One pokemon per line.')
+parser.add_argument('--out_csv', help='Path to output data in csv format.')
+
 
 def scrape_single_pokemon_name(name: str) -> dict:
 	data = dict()
@@ -38,7 +40,7 @@ def scrape_single_pokemon_name(name: str) -> dict:
 		break
 	
 	for ev in ev_data:
-		value = ev[0]
+		value = str(ev[0])
 		key = ev[1:]
 		evs[key] = value
 	data['evs'] = evs
@@ -62,28 +64,45 @@ def scrape_pokemon_file(file: str) -> list:
 			pokemon_data.append(scrape_single_pokemon_num(line.strip()))
 		else:
 			pokemon_data.append(scrape_single_pokemon_name(line.strip()))
-	print(pokemon_data)
 	return pokemon_data
 
 
 
 def create_ev_dict() -> dict:
 	ev = dict()
-	ev['hp'] = 0
-	ev['attack'] = 0
-	ev['defense'] = 0
-	ev['specialattack'] = 0
-	ev['specialdefense'] = 0
-	ev['speed'] = 0
+	ev['hp'] = '0'
+	ev['attack'] = '0'
+	ev['defense'] = '0'
+	ev['specialattack'] = '0'
+	ev['specialdefense'] = '0'
+	ev['speed'] = '0'
 	return ev
+
+
+def out_csv(data: list, file: str):
+	with open(file, 'w') as f:
+		f.write("Name, Dex Number, Type 1, Type 2, HP, Attack, Defense, Special Attack, Special Defense, Speed\n")
+		for line in data:
+			data_str = line['name'] +\
+				", " + line['dex_num'] +\
+				", " + line['type_1'] +\
+				", " + line['type_2'] +\
+				", " + line['evs']['hp'] +\
+				", " + line['evs']['attack'] +\
+				", " + line['evs']['defense'] +\
+				", " + line['evs']['specialattack'] +\
+				", " + line['evs']['specialdefense'] +\
+				", " + line['evs']['speed'] + '\n'
+			f.write(data_str)
 
 
 if __name__ == '__main__':
 	args = parser.parse_args()
 	if args.name != None:
-		scrape_single_pokemon_name(name=args.name)
+		data = list(scrape_single_pokemon_name(name=args.name))
 	if args.num != None:
-		scrape_single_pokemon_num(num=args.num)
+		data = list(scrape_single_pokemon_num(num=args.num))
 	if args.file != None:
-		scrape_pokemon_file(args.file)
-
+		data = scrape_pokemon_file(args.file)
+	if args.out_csv != None:
+		out_csv(data=data, file=args.out_csv)
