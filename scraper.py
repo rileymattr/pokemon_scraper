@@ -52,8 +52,7 @@ def scrape_single_pokemon_name(name: str) -> dict:
 def scrape_single_pokemon_num(num: str) -> dict:
 	url = 'https://pokemondb.net/pokedex/{}'.format(num)
 	page = requests.get(url)
-	soup = BeautifulSoup(page.content, 'html.parser')
-	name = soup.find('h1').text.strip()
+	name = page.url.split('/')[-1]
 	return scrape_single_pokemon_name(name)
 
 
